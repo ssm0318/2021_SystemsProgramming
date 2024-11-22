@@ -1,0 +1,38 @@
+- 이전과 같이 스켈레톤 코드와 handout는 etl에서 다운로드. 제출할 때는 mm.c와 레포트를 zip으로 압축해서 제출. handout 내용 전부 숙지 후에 과제 시작. handout에는 도움이 되는 내용이 많을 것.
+- 먼저 알아둬야할 것. macro와 포인터 연산.
+- 4쪽. macro는 함수보다 빠르고 포인터 연산을 사용하는 데에 큰 도움이 됨. 포인터 연산 자체가 혼돈하기 쉬워서 에러를 발생시키기 쉽기 때문. 
+- inline 함수와 macro의 차이는 전처리 단계에서 모두 처리가 되기 때문에 call, return overhead가 없다는 것. 
+- 이런 장점에 비해 함수가 갖는 장점들을 갖지 못하고, 파라미터의 type check가 불가능하며, 의도치 않은 결과를 초래해 디버깅을 방해할 수 있다는 단점.
+- 교재를 보시면 포인터 연산을 encapsulate한 매크로 함수들 볼 수 있음. 
+- 6쪽부터는 포인터 연산에 대해 설명.
+- 포인터는 4B 또는 8B 길이를 갖는데 이번 과제에서는 4B를 기준으로 사용. 
+- 교재에서 나온 get, put macro 함수를 사용해서 read/write 할 수 있음.
+- 착각하기 쉬운 포인터 연산은 기본적으로 포인터 타입으로 인해 달라지는 것.
+- 예를 들어 type a의 포인터 변수 ptr1에 대해 n만큼 더하면 type a의 크기를 n배 한 만큼 더해지게 됨.
+- 7쪽에 practice 보면 0x12341230을 가리키는 int 포인터 char 포인터의 1을 더하고 있음.
+- 이렇게 한 결과 이제 int형의 경우에는 0x12341234, 즉 size int, 4B인데, 이만큼이 실제로 더해지게 됨.
+- char pointer의 경우 size of char, 즉 1B 만큼이 더해지게 돼서 0x12341231의 값이 나오게 됨.
+- 9쪽에 있는 next blkp, prev blkp는 macro 함수의 내용과 블록의 구조를 보시면 어떻게 사용하면 될지 알 수 있을 것.
+- 10쪽부터는 다시 과제에 대한 설명.
+- malloc lab에서 여러분은 mm, init, mmmalloc, mmfree, mmrealloc을 작성하셔서 여러분만의 dynamic memory allocator를 구현해야 합니다.
+- 먼저 가장 간단한 버전의 memory allocator은 mm.c에 구현되어 있음.
+- 이번 과제 목표는 이 간단 버전에서 시작해서 이 memory allocator를 최적화하는 것.
+- 최적화를 위해 implicit, explicit, segregated list 등의 free list 관리 방법, 또 어떻게 free block을 찾을 것인지, list가 double linked list로 구현해야 하는지, 또는 block을 합치는 작업은 어떻게 해야할 것인지, 등의 사항을 메모리 사용 효율성과 throughput을 고려하여 결정하고 구현하시면 됩니다.
+- 11쪽에서는 구현하는 데에 도움을 드리기 위한 여러 함수들. memlib.c에 해당 함수들이 구현되어있고 어떤 함수들인지는 11쪽에 설명되어 있으니 참고.
+- 또 handout에도 작성되어있음.
+- 12쪽은 주의사항. 가장 중요한건 여러분들은 mm.c 파일 외에 다른 소스는 수정하시면 안 된다. 그 외에 많은 제약사항이 있어 과제 스펙 파일에 programming rules에 명시해두었으니 handout을 충분히 숙지하시길 바람.
+- 13쪽. 여러분이 작성하신 allocator를 테스트하기 위해 여러 trace file들을 mdrive라는 명령어로 test할 수 있음. 
+- 자세한 사용법은 handout에 나와 있으니 확인하고 원하는 옵션을 사용하여 디버깅 용도로 사용하시기 바랍니다.
+- trace file은 맨 처음에 heap size, id, operation 개수, weight를 지정해 놓음.
+- 다만 heap size와 weight는 현재 사용하지 않으므로 무시해도 됨.
+- operation은 operation code와 수행할 block의 id, size는 얼마만큼의 allocation을 할 것인지로 구성됨.
+- operation code는 a의 경우에는 allocation, f는 free, 그리고 r은 reallocation을 수행.
+- 15쪽 화면은 mdriver -v 를 실행한 화면. 각 trace file에 대해 수행하고 오류 메시지와 함께 점수를 볼 수 있음.
+- 16페이지에는 채점 기준. 우선 정확하게 구현했는지가 20점, 또 space utilization과 throughput으로 성능에 100점 만점을 부여하고, 그 외 코딩 스타일 10점, 레포트 10점으로 점수 부여.
+- 17페이지네는 작년도 질문 일부 가져온 것. trace file의 경로 변경은 source -config.h에서 하시면 되고 malloc의 input이 0이면 null을 리턴하면 됨.
+- 그리고 handout에 나와있지만 there?를 global, 또는 static으로 선언해서 사용하시면 안 됩니다. 
+- 마지막으로 서버에서 driver를 실행했을 때 점수가 들쑥날쑥한 경우 서버 cpu 사용량에 따라 점수가 다르게 나올 수 있으니 참고.
+- 18쪽은 work flow에 대한 설명. 먼저 교재에 나온 내용을 완벽히 숙지하시고, implicit list로 먼저 구현하시기 바람. 그 후 list의 종류를 바꾸거나 allocation policy를 수정하거나, 혹은 block의 structure을 수정함 등으로 과제 진행.
+- 19쪽, 20쪽과 같이 교재를 보면 implicit free list의 block 구조와 할당되었을 때 어떻게 되는지가 그림으로 설명되어 있음. 반드시 교재 내용을 숙지한 후 과제 시작하길 바람.
+- 항상 강조하지만 과제가 간단하지 않으니 일찍 시작하시고 여러분이 궁금한 점은 다른 학생들도 궁금할 것이니 etl 게시판 적극 활용.
+- 다음 시간은 zoom으로 q&a 세션.

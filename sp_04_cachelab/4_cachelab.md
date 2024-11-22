@@ -1,0 +1,61 @@
+- 오늘은 네번째 랩인 cache lab.
+- 제출 양식 이전과 동일하고 스켈레톤 랩 다운 받아 진행.
+- 3쪽. 두 개 파트로 구성.
+- part a는 cache 동작 simulate하는 cache simulator.
+- 실제 cache 사용하는게 아니라 어떻게 동작하는지 trace file로 시뮬레이션.
+- part b는 matrix transfers function?을 cache 친화적으로 구현하는 과제. 
+- part a. 이번 과제는 실제로 캐시 사용하는 것 x 실제로 데이터 저장하지도 않고 block offset 사용하지도 않음. 
+- 단순히 cache hit miss eviction이 일어난 것을 simulation하는 것.
+- cache simulator는 set의 개수, block의 크기, 그리고 associativity에 따라 동작해야 함.
+- 또한 replacement policy는 RLU를 사용해서 가장 오래 사용되지 않은 block을 evict.
+- cache simulator에서 사용하는 trace file은 memory관리나 threading등을 분석하는 데에 사용되는 벨그린드(?)라는 리눅스 툴로 생성.
+- 5페이지 우측 보면 벨그린드?로 생성된 메모리 트레이스가 어떤 형식을 띄고 있는지 볼 수 있음.
+- 각 라인은 스페이스 한 칸 띄우고 operation address, 그리고 사이즈 형식으로 구성.
+- 이 trace file에는 네 개의 operation.
+- i는 instruction load, l/s는 data load/store, m은 데이터를 수정하는 operation. 
+- i는 맨 앞에 스페이스 없고 나머지는 맨 앞에 space 들어감. 
+- 이를 통해 실제 시뮬레이션에 필요한 오퍼레이션을 용이하게 parsing 가능.
+- 7페이지. cache simulator 작성은 csim.c에 하시면 됨. 
+- simulator은 memory trace file을 따라가면서 hit miss가 일어나는 것을 추적하고 맨 마지막에 hit, miss, evict가 얼마나 일어났는지 출력하시면 됨.
+- 저희는 여러분들이 과제를 진행하는 데에 도움이 될 수 있도록 올바르게 동작하는 예시를 볼 수 있는 csim ref 실행 파일을 드림.
+- 7쪽에 사용 방법 있으니 참고.
+- 또한 8쪽에서는 csim ref를 사용하는 방법 추가로.
+- 옵션은 7쪽 내용 참고해서 적절히 조합해서 옵션.
+- verbose 옵션에 따라 어떻게 다르게 출력되는지 확인 가능.
+- 9쪽은 프로그래밍 룰. 과제 스펙에 대한 내용이니 염두에 두세요. 
+- cache simulator 구현에 약간 힌트 드리자면 여기서의 cache는 cache line의 2차원 배열이라고 생각하시면 됨.
+- 각 cache line은 valid bit, tag, lru counter를 갖고, cache는 2^s개의 set과 2개(?)의 associativity를 갖도록 구현.
+- 11쪽부터는 과제를 진행하는 데에 도움이 되는 함수에 대한 설명. 
+- get opt는 cmdline arg를 parsing하는 데에 도움. 11-13쪽에 사용법 참고.
+- 14페이지는 fscanf에 대한 내용. fscanf는 file stream으로부터 scanf를 수행.
+- 15페이지에는 fscanf의 사용 예시. 참고.
+- 마지막으로 16페이지는 malloc과 free에 대한 내용. 여태 많이 사용하셨을테니 생략.
+- 17페이지부터는 part b인 transpose function에 대한 설명.
+- matrix transpose와 같은 행렬 연산은 어떻게 수행하는지에 따라 성능이 크게 달라지기도.
+- 저희가 제공해드린 trans.c 파일에는 단순히 transpose하는 코드가 함께 제공됨.
+- 이는 올바르게 동작하지만 효율적 동작 x
+- 이 파트의 목표는 여러 크기의 행렬들에 대해 transpose를 수행할 때 cache miss가 최소한으로 발생하도록 함수 작성하는 것.
+- 18쪽부터는 transpose할 때 일반적으로 cache miss가 많이 난다는 사실을 설명.
+- 20쪽부터는 효율적인 캐시 사용을 위한 blocking이라는 테크닉.
+- blocking은 행렬을 작은 sub matrix로 나누어서 연산을 수행하는 것을 말함. 
+- 22쪽은 blocking을 사용했을 때 어떻게 효율적으로 사용하는 지에 대해. 
+- 이해하기 쉽게 정리되어 있으니 과제 진행하실 때 참고.
+- 28쪽에는 transpose할 때의 환경이 어떤 구조의 캐시인지 스펙을 명시해두었음.
+- 이 캐시는 direct mapping, 32byte의 block size에 32개의 set을 갖는 캐시를 사용.
+- 30쪽. a와 마찬가지로 b도 과제 하면서 지켜야할 프로그래밍 룰이 있음.
+- 이 중 하나라도 어길 경우 실행 결과가 정상적으로 나오지 않고, 결과가 정상 출력 되더라도 0점 처리.
+- 특히 transpose function에서 호출하는 function에서의 변수를 포함해 local 변수를 12개 초과해서 사용하지 않을 것.
+- 재귀로 구현하지 않을 것. 행렬 a의 값은 건드리지 말 것. array를 정의하거나 malloc로 heap 공간 할당 받아 사용하지 않을 것 등 제약 사항 많으니 꼭 읽어보고 시작하세요.
+- 파트 b 시작하는 방법은 trans.c에 31쪽과 같이 transpose 함수를 위한 템플릿을 붙여넣어서 시작.
+- 함수를 모두 작성하셨으면 register trans function을 사용해 테스트 프로그램이 잘 인식할 수 있도록 등록.
+- 코드를 테스트하는 방법은 make로 먼저 빌드하고 test trans를 실행.
+- 어떻게 실행하고 결과는 어떤지 32쪽 참고.
+- a와 b를 모두 테스트해보고 싶으면 driver dot? 파일을 사용. 이거 테스트 결과도 33쪽에.
+- 이번 과제는 총 70점으로 part a가 ~~~
+- 빌드시 워닝이 발생하면 컴파일이 되지 않도록 옵션을 주었음. 이 부분을 해결하셔야 점수를 받을 수 있으니 모든 워닝을 해결하시고 제출.
+- 파트 a에 대한 평가는 각 test case에 대해 hit, miss, evict counter가 정확히 나오는지에 따라 점수 부여.
+- 만약 hit/miss 등 일부만 틀리면 부분점수 있음.
+- part b에 대한 평가는 35쪽 각 케이스에 대해 miss count의 숫자에 따라 점수 부여됨.
+- 단, 올바르지 못한 결과가 나올 경우 해당 테스트케이스는 0점 처리. 
+- 다음주는 휴일이므로 kernel lab이 5월 12일에 출제. 6월 2일까지.
+- cache lab은 q&a 세션 X. 
