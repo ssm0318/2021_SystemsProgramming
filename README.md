@@ -1,5 +1,7 @@
 # SystemsProgramming2021
 
+Textbook: Computer Systems: A Programmer’s Perspective, 2nd (3rd) Ed. By Randal E. Bryant & David R. Ohallaron
+
 1.	Linking  
 2.	Relocation  
 3.	Exceptions  
