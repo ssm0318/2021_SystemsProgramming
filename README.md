@@ -1,4 +1,4 @@
-# SystemProgramming2021
+# SystemsProgramming2021
 
 Lab1: 98/100  
 Lab2: 100/100  
